@@ -1,7 +1,5 @@
 package com.rbi.credit.management;
 
-import com.sun.tools.javac.Main;
-
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Random;
@@ -94,6 +92,7 @@ public class BankAdmin extends Person{
                 CustomerIdentification ci = updateGlobalCapacity(customer, customers);
                 if(ci!=null) {
                     System.out.println("Current capacity : " + ci.getTotalActiveCards() + "/5");
+                    System.out.println("Current Credit Limit : "+creditCard.getCurrentLimit());
                     System.out.println("Credit card has been added successfully");
                 }
             }else{
@@ -124,6 +123,56 @@ public class BankAdmin extends Person{
         return -1;
     }
 
+    private void closeOrBlockCreditCard() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter the Card number : ");
+        long cardNumber = scanner.nextLong();
+        CreditCard creditCard = this.bank.getCreditCardByCardNumber(cardNumber);
+        System.out.println("Card Details : ");
+        System.out.println("CARD TYPE : "+creditCard.getCardType());
+        System.out.println("CARD NUMBER : "+creditCard.getCardNumber());
+        System.out.println("CARD CVV : "+creditCard.getCvv());
+        System.out.println("CARD STATUS : "+creditCard.getCardStatus());
+        System.out.println("Select the Card Action : ");
+        System.out.println("1.Block Card");
+        System.out.println("2.Close Card");
+        int option = scanner.nextInt();
+        int result = switch (option) {
+            case 1 -> {
+                creditCard.blockCreditCard();
+                System.out.println("CARD TYPE : "+creditCard.getCardType());
+                System.out.println("CARD NUMBER : "+creditCard.getCardNumber());
+                System.out.println("CARD CVV : "+creditCard.getCvv());
+                System.out.println("CARD STATUS : "+creditCard.getCardStatus());
+                yield 1;
+            }
+            case 2 -> {
+                creditCard.closeCreditCard();
+                System.out.println("CARD TYPE : "+creditCard.getCardType());
+                System.out.println("CARD NUMBER : "+creditCard.getCardNumber());
+                System.out.println("CARD CVV : "+creditCard.getCvv());
+                System.out.println("CARD STATUS : "+creditCard.getCardStatus());
+                yield 1;
+            }
+            default -> {
+                System.out.println("Invalid option!");
+                yield 0;
+            }
+        };
+        if(result == 1){
+            Customer customer = this.bank.getCustomerByCardNumber(cardNumber);
+            this.reduceCardCapacityByOneUsingGlobalId(customer.getGlobalId());
+        }
+    }
+
+    public void reduceCardCapacityByOneUsingGlobalId(int globalId){
+        for(CustomerIdentification customerId: globalIds){
+            if(customerId.getGlobalId() == globalId){
+                customerId.reduceTotalActiveCards();
+                System.out.println("Current Card Capacity for Customer : "+customerId.getTotalActiveCards()+"/5");
+            }
+        }
+    }
 
 
     private Customer checkIfCustomerHaveAnAccountInBank() {
@@ -141,7 +190,8 @@ public class BankAdmin extends Person{
             System.out.println("4.Issue new credit card");
             System.out.println("5.View blocked cards");
             System.out.println("6.Close/block credit cards");
-            System.out.println("7.Logout");
+            System.out.println("7.Retrieve Blocked/Closed Cards in a file");
+            System.out.println("8.Logout");
             Scanner scanner = new Scanner(System.in);
             int answer = scanner.nextInt();
             int exitCode =  switch (answer) {
@@ -154,8 +204,21 @@ public class BankAdmin extends Person{
                     }
                     yield 1;
                 }
-                case 2,5,6,7 -> {
+                case 2 -> {
+                    bank.viewAllIssuedCreditCards();
                     yield 1;
+                }
+                case 5 -> {
+                    bank.viewBlockedCards();
+                    yield 1;
+                }
+                case 6 -> {
+                    closeOrBlockCreditCard();
+                    yield 1;
+                }
+                case 8 -> {
+                    System.out.println("Logged Out Successfully!");
+                    yield 0;
                 }
                 case 3 -> {
                     addCustomer(this.bank);
@@ -163,6 +226,10 @@ public class BankAdmin extends Person{
                 }
                 case 4 -> {
                     issueNewCreditCard(globalIds);
+                    yield 1;
+                }
+                case 7 ->{
+                    bank.retrieveBlockOrClosedCardsInFile();
                     yield 1;
                 }
                 default -> {
@@ -174,5 +241,4 @@ public class BankAdmin extends Person{
             }
         }
     }
-
 }

@@ -86,9 +86,12 @@ public class Main {
             }
         }
     }
+
+
     public static ArrayList<CustomerIdentification> globalCustomers = new ArrayList<>();
     public static ABCBank abcBank = new ABCBank();
     public static XYZBank xyzBank = new XYZBank();
+
 
     public static void customerInteraction() {
         while (true) {
@@ -100,7 +103,20 @@ public class Main {
             int answer = scanner.nextInt();
             int exitCode =  switch (answer) {
                 case 1 -> {
-
+                    System.out.println("Select the bank : ");
+                    System.out.println("1.ABC");
+                    System.out.println("2.XYZ");
+                    int result = scanner.nextInt();
+                    Bank bank;
+                    if(result == 1){
+                        bank = abcBank;
+                    }else if(result == 2){
+                        bank = xyzBank;
+                    }else{
+                        System.out.println("Invalid Option");
+                        yield 0;
+                    }
+                    Customer.login(bank,globalCustomers);
                     yield 1;
                 }
                 case 2 -> {

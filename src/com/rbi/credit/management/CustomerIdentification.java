@@ -21,6 +21,10 @@ public class CustomerIdentification {
         this.totalActiveCards = 0;
     }
 
+    public void reduceTotalActiveCards(){
+        this.totalActiveCards--;
+    }
+
     public int getGlobalId() {
         return globalId;
     }
