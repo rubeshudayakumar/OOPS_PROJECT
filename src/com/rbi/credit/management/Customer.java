@@ -173,10 +173,10 @@ public class Customer extends Person implements CustomerInteraction{
         int purchasedAmount = eCommerceProductManager.gotoSiteAndPurchase();
         System.out.println("Select the Card you want to Spend : ");
         CreditCard creditCard = pickACard();
-        if(creditCard.validatePin()){
+        if(creditCard.validatePin() && creditCard.validateCVV()){
             creditCard.debit(purchasedAmount);
         }else{
-            System.out.println("Incorrect pin");
+            System.out.println("Incorrect pin (or) CVV");
         }
     }
 

@@ -110,7 +110,7 @@ public abstract class Bank {
                 }
             }
         }catch (IOException e){
-            System.out.println("IO Error : "+e.getMessage());
+            System.err.println("IO Error : "+e.getMessage());
         }
         finally {
             System.out.println("The data has been retrieved in a file named : "+fileName);

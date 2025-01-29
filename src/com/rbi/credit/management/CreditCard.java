@@ -103,4 +103,11 @@ public class CreditCard {
         int enteredPin = scanner.nextInt();
         return enteredPin == this.secretPin;
     }
+
+    public boolean validateCVV(){
+        System.out.println("Enter the CVV : ");
+        Scanner scanner = new Scanner(System.in);
+        int enteredCVV = scanner.nextInt();
+        return enteredCVV == this.cvv;
+    }
 }
