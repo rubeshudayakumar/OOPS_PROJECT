@@ -1,20 +1,16 @@
-package com.rbi.credit.management;
+package com.rbi.credit.management.models.classes;
 
 import java.util.HashMap;
 import java.util.Scanner;
-
-enum CardStatus{
-    BLOCKED,
-    CLOSED,
-    ACTIVE,
-}
+import com.rbi.credit.management.models.enums.CardStatus;
+import com.rbi.credit.management.services.implementations.BankImpl;
 
 public class CreditCard {
     private long cardNumber;
     private int cvv;
     private int secretPin;
     private CardStatus cardStatus;
-    private Bank bank;
+    private BankImpl bank;
     private String cardType;
     private int currentLimit;
     private int balance;
@@ -31,7 +27,7 @@ public class CreditCard {
     }
 
 
-    public CreditCard(long cardNumber, int cvv, CardStatus cardStatus, int secretPin, String cardType, Bank bank) {
+    public CreditCard(long cardNumber, int cvv, CardStatus cardStatus, int secretPin, String cardType, BankImpl bank) {
         this.cardNumber = cardNumber;
         this.cvv = cvv;
         this.cardStatus = cardStatus;

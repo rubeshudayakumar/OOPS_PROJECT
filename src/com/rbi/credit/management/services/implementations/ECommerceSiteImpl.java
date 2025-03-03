@@ -1,14 +1,18 @@
-package com.rbi.credit.management;
+package com.rbi.credit.management.services.implementations;
+
+import com.rbi.credit.management.models.classes.Cart;
+import com.rbi.credit.management.models.classes.Product;
+import com.rbi.credit.management.services.interfaces.ECommerceSiteInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class ECommerceSite {
+public class ECommerceSiteImpl implements ECommerceSiteInterface {
     public String name;
     public ArrayList<Product> products;
 
-    public ECommerceSite(String name,ArrayList<Product> products){
+    public ECommerceSiteImpl(String name, ArrayList<Product> products){
         this.name = name;
         this.products = products;
     }

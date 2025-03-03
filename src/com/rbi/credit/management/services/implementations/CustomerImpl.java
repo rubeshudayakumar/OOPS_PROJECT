@@ -1,17 +1,22 @@
-package com.rbi.credit.management;
+package com.rbi.credit.management.services.implementations;
+
+import com.rbi.credit.management.models.classes.CustomerIdentification;
+import com.rbi.credit.management.models.classes.CreditCard;
+import com.rbi.credit.management.services.interfaces.CustomerInteraction;
+import com.rbi.credit.management.models.classes.Person;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class Customer extends Person implements CustomerInteraction{
+public class CustomerImpl extends Person implements CustomerInteraction {
     private ArrayList<CreditCard> creditCards;
     private String customerName;
     private final int globalId;
-    private Bank bank;
+    private BankImpl bank;
     public CustomerIdentification customerIdentification;
 
-    Customer(String customerName,int customerId,int loginPassword, int globalId) {
+    public CustomerImpl(String customerName, int customerId, int loginPassword, int globalId) {
         this.customerName = customerName;
         this.id = customerId;
         this.loginPassword = loginPassword;
@@ -19,13 +24,13 @@ public class Customer extends Person implements CustomerInteraction{
         this.creditCards = new ArrayList<>();
     }
 
-    public static void login(Bank bank,ArrayList<CustomerIdentification> globalCustomers){
+    public static void login(BankImpl bank, ArrayList<CustomerIdentification> globalCustomers){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter the Customer ID : ");
         int customerId = scanner.nextInt();
         System.out.println("Enter the password : ");
         int password = scanner.nextInt();
-        Customer customer = Customer.getCustomerByID(customerId,bank);
+        CustomerImpl customer = CustomerImpl.getCustomerByID(customerId,bank);
 
         if(customer == null){
             System.out.println("Customer ID is incorrect");
@@ -51,7 +56,7 @@ public class Customer extends Person implements CustomerInteraction{
         }
     }
 
-    public static void customerActions(Customer customer){
+    public static void customerActions(CustomerImpl customer){
         while(true){
             System.out.println("Choose any of the below actions : ");
             System.out.println("1.Deposit");
@@ -95,8 +100,8 @@ public class Customer extends Person implements CustomerInteraction{
 
 
 
-    public static Customer getCustomerByID(int customerId,Bank bank) {
-        for(Customer customer : bank.customers){
+    public static CustomerImpl getCustomerByID(int customerId, BankImpl bank) {
+        for(CustomerImpl customer : bank.customers){
             if(customer.getCustomerId() == customerId){
                 return customer;
             }

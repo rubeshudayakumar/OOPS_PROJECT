@@ -1,14 +1,21 @@
-package com.rbi.credit.management;
+package com.rbi.credit.management.services.implementations;
+
+import com.rbi.credit.management.models.classes.CreditCard;
+import com.rbi.credit.management.models.classes.CustomerIdentification;
+import com.rbi.credit.management.models.classes.Person;
+import com.rbi.credit.management.models.enums.CardStatus;
+import com.rbi.credit.management.services.interfaces.BankAdminInterface;
+import com.rbi.credit.management.utils.DataUtils;
 
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Random;
 
-public class BankAdmin extends Person{
-    private Bank bank;
+public class BankAdminImpl extends Person implements BankAdminInterface {
+    private BankImpl bank;
     private ArrayList<CustomerIdentification> globalIds;
 
-    public BankAdmin(Bank bank,String name,int loginPassword){
+    public BankAdminImpl(BankImpl bank, String name, int loginPassword){
         this.bank = bank;
         this.id = bank.getAdminIdTrack();
         this.name = name;
@@ -20,7 +27,7 @@ public class BankAdmin extends Person{
         this.globalIds = globalIds;
     }
 
-    private void addCustomer(Bank bank) {
+    public void addCustomer(BankImpl bank) {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Enter the customer name : ");
@@ -41,19 +48,19 @@ public class BankAdmin extends Person{
             System.out.println("Customer not found");
             return;
         }
-        Customer customer = new Customer(customerName,bank.getCustomerIdTrack(),loginPassword, globalId);
+        CustomerImpl customer = new CustomerImpl(customerName,bank.getCustomerIdTrack(),loginPassword, globalId);
         bank.setCustomerIdTrack();
         bank.addCustomer(customer);
     }
 
-    private void issueNewCreditCard(ArrayList<CustomerIdentification> customers) {
+    public void issueNewCreditCard(ArrayList<CustomerIdentification> customers) {
         CardStatus cardStatus;
         String cardType;
 
         Random random = new Random();
-        long cardNumber = 100000000000L + (long)(random.nextDouble() * 900000000000L);
-        int cvv = 100 + random.nextInt(900);
-        int secretPin = 1000 + random.nextInt(9000);
+        long cardNumber = DataUtils.getRandomSixteenDigitNumber();
+        int cvv = DataUtils.getRandomThreeDigits();
+        int secretPin = DataUtils.getRandomFourDigits();
 
         System.out.println("Select the card type : ");
         int i = 1;
@@ -67,7 +74,7 @@ public class BankAdmin extends Person{
         String card = cardTypes.get(selectedOption-1);
         CreditCard creditCard = new CreditCard(cardNumber, cvv, CardStatus.ACTIVE, secretPin,card,bank);
 
-        Customer customer = checkIfCustomerHaveAnAccountInBank();
+        CustomerImpl customer = checkIfCustomerHaveAnAccountInBank();
 
         if(customer == null){
             System.out.println("Customer not found in the bank");
@@ -104,7 +111,7 @@ public class BankAdmin extends Person{
         }
     }
 
-    private CustomerIdentification updateGlobalCapacity(Customer customer,ArrayList<CustomerIdentification> customerIdentifications) {
+    public CustomerIdentification updateGlobalCapacity(CustomerImpl customer, ArrayList<CustomerIdentification> customerIdentifications) {
         for(CustomerIdentification ci : customerIdentifications){
             if(ci.getGlobalId() == customer.getGlobalId()){
                 ci.setTotalActiveCards();
@@ -114,7 +121,7 @@ public class BankAdmin extends Person{
         return null;
     }
 
-    private int getActiveCardCount(Customer customer,ArrayList<CustomerIdentification> customerIdentifications){
+    public int getActiveCardCount(CustomerImpl customer, ArrayList<CustomerIdentification> customerIdentifications){
         for(CustomerIdentification ci : customerIdentifications){
             if(ci.getGlobalId() == customer.getGlobalId()){
                 return ci.getTotalActiveCards();
@@ -123,7 +130,7 @@ public class BankAdmin extends Person{
         return -1;
     }
 
-    private void closeOrBlockCreditCard() {
+    public void closeOrBlockCreditCard() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter the Card number : ");
         long cardNumber = scanner.nextLong();
@@ -160,7 +167,7 @@ public class BankAdmin extends Person{
             }
         };
         if(result == 1){
-            Customer customer = this.bank.getCustomerByCardNumber(cardNumber);
+            CustomerImpl customer = this.bank.getCustomerByCardNumber(cardNumber);
             this.reduceCardCapacityByOneUsingGlobalId(customer.getGlobalId());
         }
     }
@@ -175,7 +182,7 @@ public class BankAdmin extends Person{
     }
 
 
-    private Customer checkIfCustomerHaveAnAccountInBank() {
+    public CustomerImpl checkIfCustomerHaveAnAccountInBank() {
         System.out.println("Enter the Customer ID : ");
         Scanner scanner = new Scanner(System.in);
         int customerId = scanner.nextInt();
@@ -199,7 +206,7 @@ public class BankAdmin extends Person{
                     String[] headers = {"Customer ID", "Global ID", "Customer Name"};
                     System.out.printf("%-15s %-15s %-15s%n", headers[0], headers[1], headers[2]);
                     System.out.println("-----------------------------------------------");
-                    for(Customer c : this.bank.customers){
+                    for(CustomerImpl c : this.bank.customers){
                         System.out.printf("%-15d %-15s %-15s%n", c.getCustomerId() , c.getGlobalId(), c.getCustomerName());
                     }
                     yield 1;

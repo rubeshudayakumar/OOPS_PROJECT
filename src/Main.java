@@ -1,4 +1,8 @@
-import com.rbi.credit.management.*;
+import com.rbi.credit.management.models.classes.ABCBank;
+import com.rbi.credit.management.models.classes.CustomerIdentification;
+import com.rbi.credit.management.models.classes.XYZBank;
+import com.rbi.credit.management.services.implementations.BankImpl;
+import com.rbi.credit.management.services.implementations.CustomerImpl;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -16,7 +20,7 @@ public class Main {
             System.out.println("Press any key to go back to the previous menu");
             Scanner scanner = new Scanner(System.in);
             int answer = scanner.nextInt();
-            Bank result = switch (answer) {
+            BankImpl result = switch (answer) {
                 case 1 -> {
                     yield abcBank;
                 }
@@ -107,7 +111,7 @@ public class Main {
                     System.out.println("1.ABC");
                     System.out.println("2.XYZ");
                     int result = scanner.nextInt();
-                    Bank bank;
+                    BankImpl bank;
                     if(result == 1){
                         bank = abcBank;
                     }else if(result == 2){
@@ -116,7 +120,7 @@ public class Main {
                         System.out.println("Invalid Option");
                         yield 0;
                     }
-                    Customer.login(bank,globalCustomers);
+                    CustomerImpl.login(bank,globalCustomers);
                     yield 1;
                 }
                 case 2 -> {

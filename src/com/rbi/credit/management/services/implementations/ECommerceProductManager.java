@@ -1,15 +1,19 @@
-package com.rbi.credit.management;
+package com.rbi.credit.management.services.implementations;
+
+import com.rbi.credit.management.models.classes.Cart;
+import com.rbi.credit.management.models.classes.Product;
+import com.rbi.credit.management.services.interfaces.ECommerceProductManagerInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class ECommerceProductManager {
+public class ECommerceProductManager implements ECommerceProductManagerInterface {
 
-    public ArrayList<ECommerceSite> eCommerceSites;
+    public ArrayList<ECommerceSiteImpl> eCommerceSites;
 
     public ECommerceProductManager(){
-        ECommerceSite amazon = new ECommerceSite("Amazon",
+        ECommerceSiteImpl amazon = new ECommerceSiteImpl("Amazon",
                 new ArrayList<Product>() {{
                     add(new Product("Laptop", 1500));
                     add(new Product("Smartphone", 800));
@@ -18,7 +22,7 @@ public class ECommerceProductManager {
                     add(new Product("Headphones", 200));
                 }}
         );
-        ECommerceSite flipkart = new ECommerceSite("Flipkart",
+        ECommerceSiteImpl flipkart = new ECommerceSiteImpl("Flipkart",
                 new ArrayList<Product>() {{
                     add(new Product("Monitor", 250));
                     add(new Product("Keyboard", 100));
@@ -36,14 +40,14 @@ public class ECommerceProductManager {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Select the E-Commerce site : ");
         int iterator = 1;
-        HashMap<Integer,ECommerceSite> availableSites = new HashMap<>();
-        for(ECommerceSite eCommerceSite: eCommerceSites){
+        HashMap<Integer, ECommerceSiteImpl> availableSites = new HashMap<>();
+        for(ECommerceSiteImpl eCommerceSite: eCommerceSites){
             System.out.println(iterator+"."+eCommerceSite.name);
             availableSites.put(iterator,eCommerceSite);
             iterator++;
         }
         int selectedOption = scanner.nextInt();
-        ECommerceSite selectedEcommerceSite = availableSites.get(selectedOption);
+        ECommerceSiteImpl selectedEcommerceSite = availableSites.get(selectedOption);
         if(selectedEcommerceSite!=null){
             ArrayList<Cart> cartItems = selectedEcommerceSite.purchaseItems();
             return selectedEcommerceSite.getTotalPurchasedAmount(cartItems);

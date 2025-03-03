@@ -1,4 +1,4 @@
-package com.rbi.credit.management;
+package com.rbi.credit.management.models.classes;
 
 public class Person {
     public String name;
